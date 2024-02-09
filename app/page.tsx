@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { getFrameMetadata } from '@coinbase/onchainkit'
 
-const URL = process.env.VERCEL_URL || 'http://localhost:3000'
+const URL = process.env.NEXT_PUBLIC_BASE_URL || process.env.VERCEL_URL || 'http://localhost:3000'
 
 const frameMetadata = getFrameMetadata({
   buttons: [

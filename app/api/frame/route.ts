@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Vault, fetchVaults } from './vaults'
 import { compare } from 'compare-versions'
 
-const URL = process.env.VERCEL_URL || 'http://localhost:3000'
+const URL = process.env.NEXT_PUBLIC_BASE_URL || process.env.VERCEL_URL || 'http://localhost:3000'
 
 const naiveCache = {
   vaults: {
