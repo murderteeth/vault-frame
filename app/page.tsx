@@ -1,23 +1,25 @@
 import type { Metadata } from 'next'
 import { getFrameMetadata } from '@coinbase/onchainkit'
 
+const URL = process.env.VERCEL_URL || 'http://localhost:3000'
+
 const frameMetadata = getFrameMetadata({
   buttons: [
     {
       label: '💥 lfg 💥',
     }
   ],
-  image: `${process.env.NEXT_PUBLIC_BASE_URL}/framelander.png`,
-  post_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/frame?idx=0`,
+  image: `${URL}/api/og/lander`,
+  post_url: `${URL}/api/frame?idx=0`,
 })
 
 export const metadata: Metadata = {
-  title: 'V3 Live Stream',
-  description: 'latest yearn.fi apys x tvls',
+  title: 'Yearn Vaults Frame',
+  description: 'Latest vault apys x tvls from yearn.fi',
   openGraph: {
-    title: 'V3 Live Stream',
-    description: 'latest yearn.fi apys x tvls',
-    images: [`${process.env.NEXT_PUBLIC_BASE_URL}/framelander.png`],
+    title: 'Yearn Vaults Frame',
+    description: 'Latest vault apys x tvls from yearn.fi',
+    images: [`${URL}/api/og/lander`],
   },
   other: {
     ...frameMetadata,
@@ -26,16 +28,11 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return <main className="min-h-screen flex flex-col items-center justify-center">
-    <div className={`relative p-24 
+    <div className={`w-[1200px] h-[630px] p-24 
       flex flex-col items-center justify-center
-      bg-black/20 rounded-lg
+      bg-black/20
       `}>
-      <h1 className="font-bold text-4xl">V3 Live Stream</h1>
-      <p className="font-mono">latest yearn.fi apys x tvls</p>
-      <div className="absolute top-4 right-4 flex items-center gap-3">
-        <div className="font-mono text-neutral-400 text-xs">live</div>
-        <div className="w-2 h-2 bg-red-400 rounded-full"></div>
-      </div>
+      <h1 className="font-mono text-6xl">Yearn Vaults Frame</h1>
     </div>
   </main>
 }
