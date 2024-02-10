@@ -60,18 +60,19 @@ async function fetchPrices(chainId: number) {
   return await response.json()
 }
 
-export async function computeJuicedApr(chainId: number, vault: `0x${string}`) {
+export async function computeJuicedApr(chainId: number, decimals: number, vault: `0x${string}`) {
   const peripherals = PERIPHERALS[getAddress(vault)]
   const prices = await fetchPrices(chainId)
   const onchain = await fetchChainData(
     chainId, vault, peripherals.staker, peripherals.rewards
   )
 
+  const denominator = 10 ** (18 - decimals + 6 + 2)
   const vaultSupply = onchain?.[0]?.result || 0n
   const rewardRate = onchain?.[1]?.result?.[3] || 0n
   const rewardDuration = onchain?.[1]?.result?.[1] || 0n
   const rewardsPerWeek = rewardRate * rewardDuration
   const rewardsPrice = BigInt(prices[peripherals.rewards])
-  const result = Number(((rewardsPerWeek * rewardsPrice) / vaultSupply) * 52n * 100n) / 10 ** (6 + 2)
+  const result = Number(((rewardsPerWeek * rewardsPrice) / vaultSupply) * 52n * 100n) / denominator
   return result
 }

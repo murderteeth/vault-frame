@@ -21,6 +21,7 @@ const VAULT_QUERY = `query Data($chainId: Int!, $address: String!) {
     chainId
     address
     name
+    decimals
     tvlUsd
     tvlSparkline {
       value
@@ -125,7 +126,7 @@ export async function template(chainId: number, address: `0x${string}`) {
   const icon = `https://assets.smold.app/api/token/${chainId}/${address}/logo-128.png?fallback=true&w=48&q=75`
 
   const juiced = vault.name.toLowerCase().includes('ajna')
-  const juicedApr = juiced ? await computeJuicedApr(chainId, address) : 0
+  const juicedApr = juiced ? await computeJuicedApr(chainId, vault.decimals, address) : 0
   const bgcolor = juiced ? ajna_naranja_300 : primary_950
   const bgimage = juiced ? 'bg-juiced.png' : 'bg-fuchsia.png'
   const txtcolor = juiced ? ajna_naranja_950 : '#fff'
