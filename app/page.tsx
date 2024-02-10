@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Yearn Vaults Frame',
     description: 'Juicy vault apys x tvls from yearn.fi',
-    images: [`${BASE_URL}/api/og/lander`],
+    images: [`${BASE_URL}/api/og/lander?fu-cache-nonce=1`],
   },
   other: {
     ...frameMetadata,
