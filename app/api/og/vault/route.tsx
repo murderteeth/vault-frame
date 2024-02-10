@@ -8,7 +8,7 @@ export const runtime = 'edge'
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams
   const chainId = parseInt(searchParams.get('chainId') || '1')
-  const address = searchParams.get('address') || '0x'
+  const address = (searchParams.get('address') || '0x') as `0x${string}`
 
   const options = {
     width: 1200,

@@ -2,8 +2,7 @@ import { getFrameHtmlResponse } from '@coinbase/onchainkit'
 import { NextRequest, NextResponse } from 'next/server'
 import { Vault, fetchVaults } from './vaults'
 import { compare } from 'compare-versions'
-
-const URL = process.env.NEXT_PUBLIC_BASE_URL || process.env.VERCEL_URL || 'http://localhost:3000'
+import { BASE_URL } from '@/app/baseurl'
 
 const naiveCache = {
   vaults: {
@@ -43,12 +42,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   ? 'https://juiced.yearn.fi'
   : `https://yearn.fi/v3/${vault.chainId}/${vault.address}`
 
-  const image = `${URL}/api/og/vault?chainId=${vault.chainId}&address=${vault.address}`
+  const image = `${BASE_URL}/api/og/vault?chainId=${vault.chainId}&address=${vault.address}`
 
   const frame = getFrameHtmlResponse({
     buttons: [
       {
-        label: 'next 👉',
+        label: 'next',
       },
       {
         action: 'link',
@@ -57,7 +56,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       }
     ],
     image,
-    post_url: `${URL}/api/frame?idx=${idx + 1}`,
+    post_url: `${BASE_URL}/api/frame?idx=${idx + 1}`,
   })
 
   return new NextResponse(frame)

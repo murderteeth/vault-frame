@@ -1,25 +1,24 @@
 import type { Metadata } from 'next'
 import { getFrameMetadata } from '@coinbase/onchainkit'
-
-const URL = process.env.NEXT_PUBLIC_BASE_URL || process.env.VERCEL_URL || 'http://localhost:3000'
+import { BASE_URL } from './baseurl'
 
 const frameMetadata = getFrameMetadata({
   buttons: [
     {
-      label: '💥 lfg 💥',
+      label: '☆☆==-. LFG .-==☆☆',
     }
   ],
-  image: `${URL}/api/og/lander`,
-  post_url: `${URL}/api/frame?idx=0`,
+  image: `${BASE_URL}/api/og/lander`,
+  post_url: `${BASE_URL}/api/frame?idx=0`,
 })
 
 export const metadata: Metadata = {
   title: 'Yearn Vaults Frame',
-  description: 'Latest vault apys x tvls from yearn.fi',
+  description: 'Juicy vault apys x tvls from yearn.fi',
   openGraph: {
     title: 'Yearn Vaults Frame',
-    description: 'Latest vault apys x tvls from yearn.fi',
-    images: [`${URL}/api/og/lander`],
+    description: 'Juicy vault apys x tvls from yearn.fi',
+    images: [`${BASE_URL}/api/og/lander`],
   },
   other: {
     ...frameMetadata,
@@ -28,11 +27,22 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return <main className="min-h-screen flex flex-col items-center justify-center">
-    <div className={`w-[1200px] h-[630px] p-24 
+    <div className={`relative w-[1200px] h-[630px] p-24 
       flex flex-col items-center justify-center
-      bg-black/20
+      bg-primary-600
       `}>
-      <h1 className="font-mono text-6xl">Yearn Vaults Frame</h1>
+      <div className="absolute w-[600px] h-[630px] top-0 left-0 flex items-center justify-center">
+        <h1 className="font-mono text-6xl">Yearn Vaults</h1>
+      </div>
+
+      <div className="absolute w-[500px] h-[630px] top-0 right-0 flex">
+        <img className="absolute z-0 inset" width="500" height="630" src={`${BASE_URL}/bg-fuchsia.png`} />
+        <div className="absolute z-10 inset w-full h-full flex items-center justify-center">
+          <div className="w-[148px] h-[186px] flex items-center justify-center bg-primary-600">
+            <img className="w-[96px] h-[96px]" src={`${BASE_URL}/y.png`} />
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 }
