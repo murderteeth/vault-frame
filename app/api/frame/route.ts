@@ -17,7 +17,7 @@ async function getVaults() {
 
   const vaults = await fetchVaults()
 
-  const filtered = vaults.filter(vault => compare(vault.apiVersion, '3.0.0', '>='))
+  const filtered = vaults.filter(vault => vault.type === 'vault' && compare(vault.apiVersion, '3.0.0', '>='))
   filtered.sort((a, b) => a.tvlUsd > b.tvlUsd ? -1 : 1)
   const topTen = filtered.slice(0, 10)
 
@@ -34,15 +34,14 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const idx = parseInt(searchParams.get('idx') || '0')
 
   const vaults = await getVaults()
-  console.log(vaults)
   const vault = vaults[idx % vaults.length]
 
-  
+
   const target = vault.name.toLowerCase().includes('ajna')
   ? 'https://juiced.yearn.fi'
   : `https://yearn.fi/v3/${vault.chainId}/${vault.address}`
 
-  const image = `${BASE_URL}/api/og/vault?chainId=${vault.chainId}&address=${vault.address}`
+  const image = `${BASE_URL}/api/og/vault?chainId=${vault.chainId}&address=${vault.address}&fu-cache=${new Date().getTime()}`
 
   const frame = getFrameHtmlResponse({
     buttons: [
@@ -56,7 +55,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       }
     ],
     image,
-    post_url: `${BASE_URL}/api/frame?idx=${idx + 1}`,
+    post_url: `${BASE_URL}/api/frame?idx=${idx + 1}&fu-cache-nonce=1`,
   })
 
   return new NextResponse(frame)

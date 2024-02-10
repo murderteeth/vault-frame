@@ -4,6 +4,7 @@ export type Vault = {
   name: string
   apiVersion: string
   tvlUsd: number
+  type: 'vault' | 'strategy'
 }
 
 const QUERY = `query Data {
@@ -13,6 +14,7 @@ const QUERY = `query Data {
     name
     apiVersion
     tvlUsd
+    type
   }
 }`
 
