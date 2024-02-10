@@ -8,7 +8,7 @@ const frameMetadata = getFrameMetadata({
       label: '☆☆==-. LFG .-==☆☆',
     }
   ],
-  image: `${BASE_URL}/api/og/lander`,
+  image: `${BASE_URL}/api/og/lander?fu-cache-nonce=1`,
   post_url: `${BASE_URL}/api/frame?idx=0`,
 })
 
