@@ -1,5 +1,6 @@
 import { BASE_URL } from '@/app/baseurl'
 import { computeJuicedApr } from './apr'
+import { cache } from '../../cache'
 
 const primary_50 = '#f6f5fd'
 const primary_100 = '#efedfa'
@@ -67,8 +68,8 @@ export default function Minibars({ series, color }: { series: number[], color: s
 	</div>
 }
 
-function truncateName(name: string, at = 20) {
-  return name.length > at ? `${name.slice(0, at)}...` : name
+function truncateName(name: string, at = 21) {
+  return name.length > at ? `${name.slice(0, at - 3)}...` : name
 }
 
 function chainName(chainId: number) {
@@ -119,18 +120,43 @@ async function fetchYDaemonApr(chainId: number, address: string) {
   return json.apr
 }
 
-export async function template(chainId: number, address: `0x${string}`) {
+type TemplateData = {
+  vault: any
+  apr: any
+  baseApr: number
+  icon: string
+  juiced: boolean
+  juicedApr: number
+  bgcolor: string
+  bgimage: string
+  txtcolor: string
+  name: string
+}
+
+async function getTemplateData(chainId: number, address: `0x${string}`): Promise<TemplateData> {
+  const cached = cache.get<TemplateData>(`getTemplateData-${chainId}-${address}`)
+  if (cached) return cached
+
   const vault = await fetchKongVault(chainId, address)
   const apr = await fetchYDaemonApr(chainId, address)
   const baseApr = apr.points.monthAgo || apr.points.weekAgo
   const icon = `https://assets.smold.app/api/token/${chainId}/${address}/logo-128.png?fallback=true&w=48&q=75`
-
   const juiced = vault.name.toLowerCase().includes('ajna')
   const juicedApr = juiced ? await computeJuicedApr(chainId, vault.decimals, address) : 0
   const bgcolor = juiced ? ajna_naranja_300 : primary_600
   const bgimage = juiced ? 'bg-juiced.png' : 'bg-fuchsia.png'
   const txtcolor = juiced ? ajna_naranja_950 : primary_100
-  const name = vault.name.replace(/Vault$/, '').trim()
+  const name = vault.name.trim().replace(/Vault$/, '')
+  const result = { vault, apr, baseApr, icon, juiced, juicedApr, bgcolor, bgimage, txtcolor, name }
+
+  cache.set(`getTemplateData-${chainId}-${address}`, result)
+  return result
+}
+
+export async function template(chainId: number, address: `0x${string}`) {
+  const { 
+    vault, baseApr, juiced, juicedApr, icon, bgcolor, bgimage, txtcolor, name 
+  } = await getTemplateData(chainId, address)
 
   return <div tw={`flex w-full h-full flex-col items-center justify-center text-[${txtcolor}] bg-[${bgcolor}]`}>
     <div tw="absolute w-[600px] h-[630px] top-0 left-0 pl-8 py-12 flex flex-col justify-between">

@@ -3,17 +3,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Vault, fetchVaults } from './vaults'
 import { compare } from 'compare-versions'
 import { BASE_URL } from '@/app/baseurl'
-
-const naiveCache = {
-  vaults: {
-    value: [] as Vault[],
-    expiration: 0
-  }
-}
+import { cache } from '../cache'
 
 async function getVaults() {
-  const cached = naiveCache.vaults
-  if (cached.expiration > Date.now()) return cached.value
+  const cached = cache.get<Vault[]>('vaults')
+  if (cached) return cached
 
   const vaults = await fetchVaults()
 
@@ -21,11 +15,7 @@ async function getVaults() {
   filtered.sort((a, b) => a.tvlUsd > b.tvlUsd ? -1 : 1)
   const topTen = filtered.slice(0, 10)
 
-  naiveCache.vaults = {
-    value: topTen,
-    expiration: Date.now() + 1000 * 60 * 60
-  }
-
+  cache.set('vaults', topTen)
   return topTen
 }
 
