@@ -55,7 +55,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       }
     ],
     image,
-    post_url: `${BASE_URL}/api/frame?idx=${idx + 1}&fu-cache-nonce=1`,
+    post_url: `${BASE_URL}/api/frame?idx=${idx + 1}&fu-cache-nonce=2`,
   })
 
   return new NextResponse(frame)

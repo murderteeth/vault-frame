@@ -67,7 +67,7 @@ export default function Minibars({ series, color }: { series: number[], color: s
 	</div>
 }
 
-function truncateName(name: string, at = 16) {
+function truncateName(name: string, at = 20) {
   return name.length > at ? `${name.slice(0, at)}...` : name
 }
 
@@ -86,12 +86,12 @@ function chainName(chainId: number) {
 function MeterLine({ label, measure, measure2, points, bgcolor, txtcolor, tw }: { label: string, measure: string, measure2?: string, points: number[], bgcolor: string, txtcolor: string, tw?: string }) {
   const pad = Math.max(0, 7 - measure.length)
   return <div tw={`flex items-end ${tw ? tw : ''}`}>
-    <div tw="text-4xl">{`${label}...`}</div>
+    <div tw="text-4xl">{label}</div>
     <div tw="flex items-end">
       <div tw="relative flex text-6xl tracking-tighter">
         <div tw={`flex text-[${bgcolor}]`}>{'*'.repeat(pad)}</div>
         {measure}
-        {measure2 && <div tw="absolute -top-6 right-0 flex text-xl">{`${measure2} +`}</div>}
+        {measure2 && <div tw="absolute -bottom-6 right-0 flex text-2xl">{measure2}</div>}
       </div>
       <div tw="flex ml-12 w-32 h-20">
         <Minibars series={points} color={txtcolor} />
@@ -127,30 +127,38 @@ export async function template(chainId: number, address: `0x${string}`) {
 
   const juiced = vault.name.toLowerCase().includes('ajna')
   const juicedApr = juiced ? await computeJuicedApr(chainId, vault.decimals, address) : 0
-  const bgcolor = juiced ? ajna_naranja_300 : primary_950
+  const bgcolor = juiced ? ajna_naranja_300 : primary_600
   const bgimage = juiced ? 'bg-juiced.png' : 'bg-fuchsia.png'
-  const txtcolor = juiced ? ajna_naranja_950 : '#fff'
+  const txtcolor = juiced ? ajna_naranja_950 : primary_100
   const name = vault.name.replace(/Vault$/, '').trim()
-  const txtsize = name.length > 14 ? 'text-5xl' : 'text-6xl'
 
   return <div tw={`flex w-full h-full flex-col items-center justify-center text-[${txtcolor}] bg-[${bgcolor}]`}>
     <div tw="absolute w-[600px] h-[630px] top-0 left-0 pl-8 py-12 flex flex-col justify-between">
       <div tw="flex flex-col justify-start">
-        <div tw={`${txtsize} tracking-tighter`}>{truncateName(name)}</div>
+        <div style={{ whiteSpace: 'nowrap', letterSpacing: '-0.125em' }} tw="text-6xl">{truncateName(name)}</div>
       </div>
 
-      <div tw="flex flex-col -mt-16">
-        <MeterLine label="APY" measure={juiced ? fPercent(juicedApr) : fPercent(baseApr)} measure2={juiced ? `base ${fPercent(baseApr)}` : undefined} points={vault.apySparkline.map((point: any) => point.value)} bgcolor={bgcolor} txtcolor={txtcolor} />
-        <MeterLine label="TVL" measure={fUSD(vault.tvlUsd)} points={vault.tvlSparkline.map((point: any) => point.value)} bgcolor={bgcolor} txtcolor={txtcolor} tw="mt-12" />
+      <div tw="-mt-16 pr-4 flex flex-col items-end">
+        <MeterLine label="APR" 
+          measure={juiced ? fPercent(juicedApr) : fPercent(baseApr)} 
+          measure2={juiced ? `+ base ${fPercent(baseApr)}` : undefined} 
+          points={vault.apySparkline.map((point: any) => point.value)} 
+          bgcolor={bgcolor} 
+          txtcolor={txtcolor} />
+        <MeterLine label="TVL" 
+          measure={fUSD(vault.tvlUsd)} 
+          points={vault.tvlSparkline.map((point: any) => point.value)} 
+          bgcolor={bgcolor} 
+          txtcolor={txtcolor} tw="mt-12" />
       </div>
 
-      <div>{`${chainName(chainId)} ${fEvmAddress(address)}`}</div>
+      <div tw="text-2xl">{`${chainName(chainId)} ${fEvmAddress(address)}`}</div>
     </div>
 
     <div tw="absolute w-[500px] h-[630px] top-0 right-0 flex">
       <img tw="absolute" width="500" height="630" src={`${BASE_URL}/${bgimage}`} />
       <div tw="w-full h-full flex items-center justify-center">
-        <div tw={`w-[148px] h-[186px] flex items-center justify-center bg-[${bgcolor}] rounded-sm`}>
+        <div tw={`w-[148px] h-[186px] flex items-center justify-center bg-[${bgcolor}] rounded-lg`}>
           <img tw="w-[96px] h-[96px]" src={icon} />
         </div>
       </div>
