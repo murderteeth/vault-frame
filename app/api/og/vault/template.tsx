@@ -1,6 +1,7 @@
 import { BASE_URL } from '@/app/baseurl'
 import { computeJuicedApr } from './apr'
 import { cache } from '../../cache'
+import { getAddress } from 'viem'
 
 const primary_50 = '#f6f5fd'
 const primary_100 = '#efedfa'
@@ -107,7 +108,7 @@ async function fetchKongVault(chainId: number, address: string) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       query: VAULT_QUERY,
-      variables: { chainId, address }
+      variables: { chainId, address: getAddress(address) }
     })
   })
   const { data } = await response.json()
