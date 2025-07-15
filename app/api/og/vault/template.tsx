@@ -24,15 +24,21 @@ const VAULT_QUERY = `query Data($chainId: Int!, $address: String!) {
     address
     name
     decimals
-    tvlUsd
-    tvlSparkline {
-      value
-      time
+    tvl {
+      close
     }
-    apyNet
-    apySparkline {
-      value
-      time
+    apy {
+      net
+    }
+    sparklines {
+      tvl {
+        value: close
+        time: blockTime
+      }
+      apy {
+        value: close
+        time: blockTime
+      }
     }
   }
 }`
@@ -111,6 +117,7 @@ async function fetchKongVault(chainId: number, address: string) {
       variables: { chainId, address: getAddress(address) }
     })
   })
+  console.log(response)
   const { data } = await response.json()
   return data.vault
 }
@@ -169,12 +176,12 @@ export async function template(chainId: number, address: `0x${string}`) {
         <MeterLine label="APR" 
           measure={juiced ? fPercent(juicedApr) : fPercent(baseApr)} 
           measure2={juiced ? `+ base ${fPercent(baseApr)}` : undefined} 
-          points={vault.apySparkline.map((point: any) => point.value)} 
+          points={vault.sparklines.apy.map((point: any) => point.value)} 
           bgcolor={bgcolor} 
           txtcolor={txtcolor} />
         <MeterLine label="TVL" 
-          measure={fUSD(vault.tvlUsd)} 
-          points={vault.tvlSparkline.map((point: any) => point.value)} 
+          measure={fUSD(vault.tvl.close)} 
+          points={vault.sparklines.tvl.map((point: any) => point.value)} 
           bgcolor={bgcolor} 
           txtcolor={txtcolor} tw="mt-12" />
       </div>
